@@ -1,57 +1,32 @@
+// server.js
 const express = require('express');
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('./models/User');
-require('dotenv').config();
+const path = require('path');
 
 const app = express();
-app.use(express.json());
+const PORT = 3000;
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error(err));
+// Set EJS as the templating engine
+app.set('view engine', 'ejs');
 
-// User Registration Endpoint
-app.post('/api/register', async (req, res) => {
-    const { username, password } = req.body;
+// Set the views directory
+app.set('views', path.join(__dirname, 'views'));
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = new User({ username, password: hashedPassword });
-    try {
-        await user.save();
-        res.status(201).send('User  registered');
-    } catch (error) {
-        res.status(400).send('Error registering user');
-    }
+// Define a route for the root URL
+app.get('/', (req, res) => {
+    res.send('index.ejs'); // Simple text response
 });
 
-// User Login Endpoint
-app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
+// Alternatively, if you want to render an EJS file
+// app.get('/', (req, res) => {
+//     res.render('index'); // Make sure you have an index.ejs file in the views folder
+// });
 
-    // Find the user
-    const user = await User.findOne({ username });
-    if (!user) {
-        return res.status(400).send('Invalid credentials');
-    }
-
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-        return res.status(400).send('Invalid credentials');
-    }
-
-    // Create and assign a token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token });
+// Define a route for the login page
+app.get('/login', (req, res) => {
+    res.render('login'); // This will render views/login.ejs
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running at http://localhost:${PORT}`);
 });

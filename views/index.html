@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GovAlert</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -34.397, lng: 150.644},
+                zoom: 8
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <header class="bg-white shadow">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-blue-600">GovAlert</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="#" class="text-gray-600 hover:text-gray-800">Home</a></li>
+                    <li><a href="reports.html" class="text-gray-600 hover:text-gray-800">Reports</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-gray-800">About</a></li>
+                    <li><a href="#" class="text-gray-600 hover:text-gray-800">Contact</a></li>
+                    <li><a href="login.ejs" class="text-gray-600 hover:text-gray-800">Login</a></li>
+                    <li><a href="signup.ejs" class="text-gray-600 hover:text-gray-800">SignUp</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container mx-auto px-4 py-16 text-center">
+        <h2 class="text-4xl font-bold mb-4">Welcome to GovAlert</h2>
+        <p class="text-gray-600 mb-12">Facilitating communication between citizens and local governments. Report community issues directly and track their progress.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <i class="fas fa-bullhorn text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Report Issues</h3>
+                <p class="text-gray-600">Submit reports about local issues, attach photos, and provide descriptions.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <i class="fas fa-map-marker-alt text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Map Issues</h3>
+                <p class="text-gray-600">View reported issues on a map to enhance visibility for local governments.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <i class="fas fa-comments text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Government Response</h3>
+                <p class="text-gray-600">Local government officials can respond to reports and update their status.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <i class="fas fa-tasks text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Track Progress</h3>
+                <p class="text-gray-600">Users can track the progress of their reports, fostering engagement and trust.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <i class="fas fa-users text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Community Engagement</h3>
+                <p class="text-gray-600">Encourage community involvement and collaboration to address local issues.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <i class="fas fa-shield-alt text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Transparency</h3>
+                <p class="text-gray-600">Ensure transparency and accountability in local government operations.</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="bg-white shadow py-4">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            &copy; 2024 GovAlert. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>
