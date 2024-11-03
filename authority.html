@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+<body class="bg-gray-100">
+    <header class="py-8">
+        <h1 class="text-4xl font-bold text-center">Report Management System</h1>
+    </header>
+    
+    <main class="container mx-auto px-4 py-16">
+        <section class="container mx-auto px-4 py-16">
+            <h2 class="text-3xl font-bold mb-6 text-center">Authority Interaction</h2>
+            <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+                <h3 class="text-xl font-semibold mb-4">Manage Reported Problems</h3>
+                <ul class="space-y-4">
+                    <li class="p-4 border rounded-lg">
+                        <h4 class="font-semibold">Report Title 1</h4>
+                        <p class="text-gray-600">Status: <span class="text-yellow-500">Pending</span></p>
+                        <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                        <form class="mt-4">
+                            <label for="response" class="block text-gray-700">Response</label>
+                            <textarea id="response" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" rows="3" required></textarea>
+                            <label for="proof" class="block text-gray-700 mt-4">Upload Proof of Resolution</label>
+                            <input type="file" id="proof" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 mt-4">Submit Response</button>
+                        </form>
+                    </li>
+                    <li class="p-4 border rounded-lg">
+                        <h4 class="font-semibold">Report Title 2</h4>
+                        <p class="text-gray-600">Status: <span class="text-blue-500">In Progress</span></p>
+                        <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                        <form class="mt-4">
+                            <label for="response" class="block text-gray-700">Response</label>
+                            <textarea id="response" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" rows="3" required></textarea>
+                            <label for="proof" class="block text-gray-700 mt-4">Upload Proof of Resolution</label>
+                            <input type="file" id="proof" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 mt-4">Submit Response</button>
+                        </form>
+                    </li>
+                    <li class="p-4 border rounded-lg">
+                        <h4 class="font-semibold">Report Title 3</h4>
+                        <p class="text-gray-600">Status: <span class="text-green-500">Resolved</span></p>
+                        <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                        <form class="mt-4">
+                            <label for="response" class="block text-gray-700">Response</label>
+                            <textarea id="response" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" rows="3" required></textarea>
+                            <label for="proof" class="block text-gray-700 mt-4">Upload Proof of Resolution</label>
+                            <input type="file" id="proof" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 mt-4">Submit Response</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </section>

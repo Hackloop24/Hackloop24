@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+<body class="bg-gray-100">
+    <header class="py-8">
+        <h1 class="text-4xl font-bold text-center">Report Management System</h1>
+    </header>
+    
+    <main class="container mx-auto px-4 py-16">
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-center">Submit a Report</h2>
+            <p class="text-gray-600 mb-8 text-center">Please fill out the form below to report an issue. Make sure to provide as much detail as possible.</p>
+            <form class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto" method="POST" action="/submit-report">
+                <div class="mb-4">
+                    <label for="title" class="block text-gray-700">Title</label>
+                    <input type="text" id="title" name="title" placeholder="Enter report title" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required aria-label="Report Title">
+                </div>
+                <div class="mb-4">
+                    <label for="description" class="block text-gray-700">Description</label>
+                    <textarea id="description" name="description" placeholder="Describe the issue in detail" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" rows="4" required aria-label="Report Description"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="location" class="block text-gray-700">Location</label>
+                    <input type="text" id="location" name="location" placeholder="Enter the location of the issue" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required aria-label="Report Location">
+                </div>
+                <div class="mb-4">
+                    <label for="state" class="block text-gray-700">State</label>
+                    <input type="text" id="state" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                </div>
+                <div class="mb-4">
+                    <label for="district" class="block text-gray-700">District</label>
+                    <input type="text" id="district" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                </div>
+                <div class="mb-4">
+                    <label for="taluk" class="block text-gray-700">Taluk</label>
+                    <input type="text" id="taluk" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                </div>
+                <div class="mb-4">
+                    <label for="panchayat" class="block text-gray-700">Panchayat/Municipal Corporation</label>
+                    <input type="text" id="panchayat" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                </div>
+                <div class="mb-4">
+                    <label for="pin-code" class="block text-gray-700">Pin Code</label>
+                    <input type="text" id="pin-code" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                </div>
+                <div class="mb-4">
+                    <label for="photo" class="block text-gray-700">Upload Photo</label>
+                    <input type="file" id="photo" name="photo" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Upload Photo">
+                </div>
+                <div id="map" class="w-full h-64 mb-4 rounded-lg border"></div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Submit Report</button>
+            </form>
+        </section>
+
+        <section>
+            <h2 class="text-3xl font-bold mb-6 text-center">Track Your Report</h2>
+            <form class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto mb-8" method="GET" action="/track-report">
+                <div class="mb-4">
+                    <label for="report-id" class="block text-gray-700">Search by Report ID</label>
+                    <input type="text" id="report-id" name="report-id" placeholder="Enter report ID" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Search by Report ID">
+                </div>
+                <div class="mb-4">
+                    <label for="status" class="block text-gray-700">Filter by Status</label>
+                    <select id="status" name="status" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" aria-label="Filter by Status">
+                        <option value="">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Search</button>
+            </form>
+            <div class="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+                <h3 class="text-xl font-semibold mb-4">Submitted Reports</h3>
+                <ul class="space-y-4">
+                    <li class="p-4 border rounded-lg">
+                        <h4 class="font-semibold">Report Title 1</h4>
+                        <p class="text-gray-600">Status: <span class="text-yellow-500">Pending</span></p>
+                        <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 25%"></div>
+                        </div>
+                    </li>
+                    <li class="p-4 border rounded-lg">
+                        <h4 class="font-semibold">Report Title 2</h4>
+                        <p class="text-gray-600">Status: <span class="text-blue-500">In Progress</span></p>
+                        <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 50%"></div>
+                        </div>
+                    </li>
+                    <li class="p-4 border rounded-lg">
+                        <h4 class="font-semibold">Report Title 3</h4>
+                        <p class="text-gray-600">Status: <span class="text-green-500">Resolved</span></p>
+                        <a href="#" class="text-blue-600 hover:underline">View Details</a>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-8 text-center">
+        <p class="text-gray-600">© 2023 Report Management System. All rights reserved.</p>
+    </footer>
+</body>
+</html>
