@@ -22,7 +22,19 @@
             <nav>
                 <ul class="flex space-x-4">
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">Home</a></li>
-                    <li><a href="reports.html" class="text-gray-600 hover:text-gray-800">Reports</a></li>
+                    <li>
+                        <a href="reports.html" class="text-gray-600 hover:text-gray-800">
+                            
+                        </a>
+                        <select id="report-dropdown" name="reports" class="ml-2">
+                            <option value="" >  Features  </option>
+                            <option value="sales-report">Sales Report</option>
+                            <option value="inventory-report">Inventory Report</option>
+                            <option value="customer-report">Customer Report</option>
+                            <option value="finance-report">Finance Report</option>
+                            <option value="employee-report">Employee Report</option>
+                        </select>
+                    </li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">About</a></li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">Contact</a></li>
                     <li><a href="/login" class="text-gray-600 hover:text-gray-800">Login</a></li>
