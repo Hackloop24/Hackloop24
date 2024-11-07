@@ -106,9 +106,13 @@ app.post('/signup', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
+    // Log the incoming credentials for debugging (remove in production)
+    console.log('Login attempt:', { username, password });
+
     // Find the user by username
     const user = await User.findOne({ username });
     if (!user) {
+        console.log('User  not found:', username);
         return res.send('Invalid username or password.');
     }
 
@@ -119,6 +123,7 @@ app.post('/login', async (req, res) => {
         req.session.successMessage = 'Login successful!'; // Set success message in session
         return res.redirect('/'); // Redirect to home page
     } else {
+        console.log('Password mismatch for user:', username);
         return res.send('Invalid username or password.');
     }
 });
