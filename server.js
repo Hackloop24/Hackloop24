@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const multer = require('multer');
+const session = require('express-session');
 const User = require('./models/User');
 const Report = require('./models/Report');
 
@@ -29,6 +30,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Initialize session middleware
+app.use(session({
+    secret: 'your_secret_key', // Change this to a secure key
+    resave: false,
+    saveUninitialized: false
+}));
+
 // Multer setup for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -42,12 +50,23 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Route for the home page
-app.get('/', (req, res) => {
-    res.render('index');
+app.get('/', async (req, res) => {
+    const successMessage = req.session.successMessage; // Get success message from session
+    req.session.successMessage = null; // Clear the message after displaying it
+
+    // Fetch all reports to display on the map
+    let reports = [];
+    try {
+        reports = await Report.find(); // Fetch all reports
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+    }
+
+    res.render('index', { successMessage, reports }); // Pass the reports to the template
 });
 
-// Route to serve reports.html
-app.get('/reports.html', (req, res) => {
+// Route to serve reports.html (if you want to keep it)
+app.get('/reports', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'reports.html'));
 });
 
@@ -79,7 +98,7 @@ app.post('/signup', async (req, res) => {
         res.send(`Signup successful for ${username}!`);
     } catch (error) {
         console.error('Error saving user:', error);
-        res.status(500).send('Error saving user.');
+        res.status(500).send('Error saving user: ' + error.message); // Provide more context
     }
 });
 
@@ -97,9 +116,10 @@ app.post('/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (match) {
         req.session.userId = user._id; // Store user ID in session
-        res.send('Login successful!');
+        req.session.successMessage = 'Login successful!'; // Set success message in session
+        return res.redirect('/'); // Redirect to home page
     } else {
-        res.send('Invalid username or password.');
+        return res.send('Invalid username or password.');
     }
 });
 
@@ -110,43 +130,82 @@ app.post('/submit-report', upload.single('photo'), async (req, res) => {
         return res.status(403).send('You must be logged in to submit a report.');
     }
 
+    // Retrieve longitude and latitude from the request body
+    const { longitude, latitude } = req.body;
+
+    // Parse longitude and latitude into numbers, default to null if not provided
+    const parsedLongitude = longitude ? parseFloat(longitude) : null;
+    const parsedLatitude = latitude ? parseFloat(latitude) : null;
+
+    // Validate coordinates if they are provided
+    if (longitude && isNaN(parsedLongitude)) {
+        return res.status(400).send('Invalid longitude. Longitude must be a valid number.');
+    }
+    if (latitude && isNaN(parsedLatitude)) {
+        return res.status(400).send('Invalid latitude. Latitude must be a valid number.');
+    }
+
     // Prepare report data
     const reportData = {
         title: req.body.title,
         description: req.body.description,
-        location: req.body.location,
+        location: {
+            type: "Point",
+            coordinates: [parsedLongitude, parsedLatitude] // Use parsed float values, can be null
+        },
         state: req.body.state,
         district: req.body.district,
         taluk: req.body.taluk,
         panchayat: req.body.panchayat,
         pinCode: req.body['pin-code'],
         photo: req.file ? req.file.path : null, // Save the path to the uploaded photo
-        userId: req.session.userId // Associate the report with the logged-in user
+        userId: req.session.userId
     };
 
     // Create and save the report
     const report = new Report(reportData);
     try {
         await report.save();
-        res.send('Report submitted successfully!');
+        // Redirect to the home page after successful submission
+        req.session.successMessage = 'Report submitted successfully!'; // Set success message
+        res.redirect('/'); // Redirect to the home page
     } catch (error) {
         console.error('Error saving report:', error);
-        res.status(500).send('Error saving report.');
+        res.status(500).send('Error saving report: ' + error.message); // Provide more context
     }
 });
 
 // Route to track reports submitted by the logged-in user
-app.get('/my-reports', async (req, res) => {
+app.get('/track-report', async (req, res) => {
+    // Check if the user is logged in
     if (!req.session.userId) {
-        return res.status(403).send('You must be logged in to view your reports.');
+        return res.status(403).send('You must be logged in to track reports.');
     }
 
     try {
+        // Fetch reports associated with the logged-in user
         const reports = await Report.find({ userId: req.session.userId });
-        res.render('my-reports', { reports }); // Render a view to display reports
+        res.render('track-report', { reports }); // Render a view to display tracked reports
     } catch (error) {
         console.error('Error fetching reports:', error);
-        res.status(500).send('Error fetching reports.');
+        res.status(500).send('Error fetching reports: ' + error.message); // Provide more context
+    }
+});
+
+// Route to view a specific report
+app.get('/report/:id', async (req, res) => {
+    const reportId = req.params.id;
+
+    try {
+        // Fetch the report by ID
+        const report = await Report.findById(reportId);
+        if (!report) {
+            return res.status(404).send('Report not found.');
+        }
+        res.render('report-detail', { report }); // Render a view to display report details
+    } catch (error) {
+        console.error('Error fetching report:', error);
+        res.status(500).send('Error fetching report: ' + error.message); // Provide more context
     }
 });
 
@@ -156,6 +215,7 @@ app.get('/logout', (req, res) => {
         if (err) {
             return res.status(500).send('Could not log out.');
         }
+        req.session.successMessage = 'You have been logged out successfully.'; // Set logout message
         res.redirect('/'); // Redirect to home after logout
     });
 });

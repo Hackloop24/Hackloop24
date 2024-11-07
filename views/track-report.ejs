@@ -1,0 +1,21 @@
+<!-- views/track-report.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Reports</title>
+</head>
+<body>
+    <h1>Your Submitted Reports</h1>
+    <ul>
+        <% reports.forEach(report => { %>
+            <li>
+                <strong><%= report.title %></strong> - <%= report.status %>
+                <a href="/report/<%= report._id %>">View Details</a>
+            </li>
+        <% }); %>
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>

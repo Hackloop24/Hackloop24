@@ -8,12 +8,63 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
     <script>
+        // Sample data for reported issues
+        const reportedIssues = [
+            {
+                id: 1,
+                location: { lat: 37.7749, lng: -122.4194 }, // Example coordinates (San Francisco)
+                description: "Pothole on 5th Ave",
+                status: "In Progress",
+                imageUrl: "https://example.com/image1.jpg"
+            },
+            {
+                id: 2,
+                location: { lat: 37.7849, lng: -122.4094 },
+                description: "Graffiti on wall near park",
+                status: "Resolved",
+                imageUrl: "https://example.com/image2.jpg"
+            }
+        ];
+
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                center: {lat: -34.397, lng: 150.644},
-                zoom: 8
+                center: { lat: 37.7749, lng: -122.4194 }, // Center on San Francisco
+                zoom: 12
+            });
+
+            // Add markers for reported issues
+            reportedIssues.forEach(issue => {
+                const marker = new google.maps.Marker({
+                    position: issue.location,
+                    map: map,
+                    title: issue.description
+                });
+
+                // Add an info window for each marker
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div>
+                            <h3>${issue.description}</h3>
+                            <p>Status: ${issue.status}</p>
+                            <img src="${issue.imageUrl}" alt="Issue Image" style="width:100px;height:auto;">
+                        </div>
+                    `
+                });
+
+                // Open info window on marker click
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
             });
         }
+
+        // Function to display alert if a success message exists
+        window.onload = function() {
+            const successMessage = '<%= successMessage %>';
+            if (successMessage) {
+                alert(successMessage);
+            }
+        };
     </script>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -23,8 +74,16 @@
             <nav>
                 <ul class="flex space-x-4">
                     <li><a href="/" class="text-gray-600 hover:text-gray-800">Home</a></li>
-                    <li>
-                        <a href="/reports.html" class="text-gray-600 hover:text-gray-800">Submit a Report</a>
+                    <li class="relative group">
+                        <a href="/reports.html" class="text-gray-600 hover:text-gray-800">Reports</a>
+                        <ul class="absolute left-0 hidden mt-2 space-y-2 bg-white border border-gray-300 rounded shadow-lg group-hover:block">
+                            <li>
+                                <a href="/public/reports.html" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Submit a Report</a>
+                            </li>
+                            <li>
+                                <a href="/views/track-report.ejs" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Track Reports</a>
+                            </li>
+                        </ul>
                     </li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">About</a></li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">Contact</a></li>
@@ -71,6 +130,10 @@
                 <p class="text-gray-600">Ensure transparency and accountability in local government operations.</p>
             </div>
         </div>
+        
+        <!-- Map Section -->
+        <h2 class="text-2xl font-bold mt-16 mb-4">Reported Issues Map</h2>
+        <div id="map" class="w-full h-96 rounded-lg shadow-lg"></div>
     </main>
     
     <footer class="bg-white shadow py-4">
