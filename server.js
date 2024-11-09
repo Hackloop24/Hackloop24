@@ -51,8 +51,10 @@ const upload = multer({ storage });
 
 // Route for the home page
 app.get('/', async (req, res) => {
-    const successMessage = req.session.successMessage; // Get success message from session
+    const successMessage = req.session.successMessage || null; // Get success message from session
+    const errorMessage = req.session.errorMessage || null; // Get error message from session
     req.session.successMessage = null; // Clear the message after displaying it
+    req.session.errorMessage = null; // Clear error message
 
     // Fetch all reports to display on the map
     let reports = [];
@@ -62,7 +64,7 @@ app.get('/', async (req, res) => {
         console.error('Error fetching reports:', error);
     }
 
-    res.render('index', { successMessage, reports }); // Pass the reports to the template
+    res.render('index', { successMessage, errorMessage, reports, userId: req.session.userId }); // Pass userId to the template
 });
 
 // Route to serve reports.html (if you want to keep it)
@@ -85,20 +87,23 @@ app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.status(400).send('Username and password are required.');
+        req.session.errorMessage = 'Username and password are required.'; // Set error message
+        return res.redirect('/signup'); // Redirect back to signup
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create a new user
-    const newUser  = new User({ username, password: hashedPassword });
     try {
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new user
+        const newUser  = new User({ username, password: hashedPassword });
         await newUser .save();
-        res.send(`Signup successful for ${username}!`);
+        req.session.successMessage = `Signup successful for ${username}!`; // Set success message
+        res.redirect('/login'); // Redirect to login page
     } catch (error) {
         console.error('Error saving user:', error);
-        res.status(500).send('Error saving user: ' + error.message); // Provide more context
+        req.session.errorMessage = 'Error saving user: ' + error.message; // Set error message
+        res.redirect('/signup'); // Redirect back to signup
     }
 });
 
@@ -109,22 +114,29 @@ app.post('/login', async (req, res) => {
     // Log the incoming credentials for debugging (remove in production)
     console.log('Login attempt:', { username, password });
 
-    // Find the user by username
-    const user = await User.findOne({ username });
-    if (!user) {
-        console.log('User  not found:', username);
-        return res.send('Invalid username or password.');
-    }
+    try {
+        // Find the user by username
+        const user = await User.findOne({ username });
+        if (!user) {
+            console.log('User  not found:', username);
+            req.session.errorMessage = 'Invalid username or password.'; // Set error message
+            return res.redirect('/login'); // Redirect back to login
+        }
 
-    // Check the password
-    const match = await bcrypt.compare(password, user.password);
-    if (match) {
-        req.session.userId = user._id; // Store user ID in session
-        req.session.successMessage = 'Login successful!'; // Set success message in session
-        return res.redirect('/'); // Redirect to home page
-    } else {
-        console.log('Password mismatch for user:', username);
-        return res.send('Invalid username or password.');
+        // Check the password
+        const match = await bcrypt.compare(password, user.password);
+        if (match) {
+            req.session.successMessage = 'Login successful!'; // Set success message in session
+            return res.redirect('/'); // Redirect to home page
+        } else {
+            console.log('Password mismatch for user:', username);
+            req.session.errorMessage = 'Invalid username or password.'; // Set error message
+            return res.redirect('/login'); // Redirect back to login
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        req.session.errorMessage = 'An error occurred during login: ' + error.message; // Set error message
+        return res.redirect('/login'); // Redirect back to login
     }
 });
 
@@ -176,7 +188,8 @@ app.post('/submit-report', upload.single('photo'), async (req, res) => {
         res.redirect('/'); // Redirect to the home page
     } catch (error) {
         console.error('Error saving report:', error);
-        res.status(500).send('Error saving report: ' + error.message); // Provide more context
+        req.session.errorMessage = 'Error saving report: ' + error.message; // Set error message
+        res.redirect('/'); // Redirect back to home
     }
 });
 

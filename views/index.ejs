@@ -58,13 +58,31 @@
             });
         }
 
-        // Function to display alert if a success message exists
+        // Function to display alerts for messages
         window.onload = function() {
-            const successMessage = '<%= successMessage %>';
+            const successMessage = '<%= successMessage || "" %>';
+            const errorMessage = '<%= errorMessage || "" %>';
             if (successMessage) {
                 alert(successMessage);
             }
+            if (errorMessage) {
+                alert(errorMessage);
+            }
         };
+        
+    window.onload = function() {
+        const successMessage = '<%= successMessage ? successMessage : "" %>';
+        const errorMessage = '<%= errorMessage ? errorMessage : "" %>';
+
+        if (successMessage) {
+            alert(successMessage);
+        }
+
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+    };
+
     </script>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -75,29 +93,49 @@
                 <ul class="flex space-x-4">
                     <li><a href="/" class="text-gray-600 hover:text-gray-800">Home</a></li>
                     <li class="relative group">
-                        <a href="/reports.html" class="text-gray-600 hover:text-gray-800">Reports</a>
+                        <a href="/reports" class="text-gray-600 hover:text-gray-800">Reports</a>
                         <ul class="absolute left-0 hidden mt-2 space-y-2 bg-white border border-gray-300 rounded shadow-lg group-hover:block">
                             <li>
-                                <a href="/public/reports.html" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Submit a Report</a>
+                                <a href="/submit-report" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Submit a Report</a>
                             </li>
                             <li>
-                                <a href="/views/track-report.ejs" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Track Reports</a>
+                                <a href="/track-report" class="block px-4 py-2 text-gray-600 hover:bg-gray-100">Track Reports</a>
                             </li>
                         </ul>
                     </li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">About</a></li>
                     <li><a href="#" class="text-gray-600 hover:text-gray-800">Contact</a></li>
-                    <li><a href="/login" class="text-gray-600 hover:text-gray-800">Login</a></li>
-                    <li>
-                        <a href="/signup" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Sign Up</a>
-                    </li>
+                    
+                    <% if (userId) { %> <!-- Check if user is logged in -->
+                        <li><a href="/profile" class="text-gray-600 hover:text-gray-800">Profile</a></li>
+                        <li><a href="/logout" class="text-gray-600 hover:text-gray-800">Logout</a></li>
+                    <% } else { %>
+                        <li><a href="/login" class="text-gray-600 hover:text-gray-800">Login</a></li>
+                        <li>
+                            <a href="/signup" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Sign Up</a>
+                        </li>
+                    <% } %>
                 </ul>
             </nav>
         </div>
     </header>
+    
     <main class="container mx-auto px-4 py-16 text-center">
         <h2 class="text-4xl font-bold mb-4">Welcome to GovAlert</h2>
         <p class="text-gray-600 mb-12">Facilitating communication between citizens and local governments. Report community issues directly and track their progress.</p>
+
+        <!-- Display Success or Error Messages -->
+        <% if (errorMessage) { %>
+            <div class="bg-red-200 text-red-800 p-4 rounded mb-4">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        <% if (successMessage) { %>
+            <div class="bg-green-200 text-green-800 p-4 rounded mb-4">
+                <%= successMessage %>
+            </div>
+        <% } %>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="bg-white p-6 rounded-lg shadow">
                 <i class="fas fa-bullhorn text-blue-600 text-3xl mb-4"></i>
@@ -130,8 +168,6 @@
                 <p class="text-gray-600">Ensure transparency and accountability in local government operations.</p>
             </div>
         </div>
-        
-       
     </main>
     
     <footer class="bg-white shadow py-4">
